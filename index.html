@@ -484,11 +484,13 @@ Check your Browserslist config to be sure that your targets are set up correctly
                             <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Kunde /
                                 Auftraggeber</label>
                             <input type="text" id="input-kunde" placeholder="Müller Bau GmbH"
+                                oninput="localStorage.setItem('sd-kunde', this.value)"
                                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition-all">
                         </div>
                         <div>
                             <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Projekt</label>
                             <input type="text" id="input-projekt" placeholder="Projektname / Ort"
+                                oninput="localStorage.setItem('sd-projekt', this.value)"
                                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition-all">
                         </div>
                     </div>
@@ -496,12 +498,14 @@ Check your Browserslist config to be sure that your targets are set up correctly
                         <div>
                             <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Prüfer</label>
                             <input type="text" id="input-kontakt" list="prufer-liste" placeholder="Name auswählen"
+                                oninput="localStorage.setItem('sd-kontakt', this.value)"
                                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition-all">
                         </div>
                         <div>
                             <label
                                 class="block text-[10px] font-black text-slate-400 uppercase mb-1">Protokoll-E-Mail</label>
                             <input type="email" id="input-email" placeholder="protokoll@baustelle.de"
+                                oninput="localStorage.setItem('sd-email', this.value)"
                                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition-all">
                         </div>
                     </div>
@@ -925,7 +929,10 @@ Check your Browserslist config to be sure that your targets are set up correctly
         }
 
         function toggleModal(id, s) { document.getElementById(id).classList.toggle('hidden', !s); }
-        function resetAllData() { window.location.reload(); }
+        function resetAllData() {
+            ['kunde','projekt','kontakt','email'].forEach(k => localStorage.removeItem('sd-' + k));
+            window.location.reload();
+        }
         window.onbeforeprint = () => {
             document.querySelectorAll('textarea').forEach(el => {
                 el.style.height = 'auto';
@@ -941,7 +948,13 @@ Check your Browserslist config to be sure that your targets are set up correctly
                 }
             });
         };
-        window.onload = () => showView('dashboard');
+        window.onload = () => {
+            ['kunde','projekt','kontakt','email'].forEach(k => {
+                const v = localStorage.getItem('sd-' + k);
+                if (v) document.getElementById('input-' + k).value = v;
+            });
+            showView('dashboard');
+        };
     </script>
 </body>
 
